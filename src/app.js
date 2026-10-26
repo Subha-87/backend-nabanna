@@ -26,6 +26,8 @@ const setTopBoxRoutes = require("./routes/boxRoute");
 const cablelTvRoutes = require("./routes/catvRoute");
 
 const meetingRoutes = require("./routes/meetingRoute");
+
+const pageContactRoutes = require("./routes/contactRoute")
 const it_app = express();
 
 it_app.use(helmet());
@@ -146,6 +148,8 @@ it_app.use("/api/publicMsg", messageRoutes);
 it_app.use("/api/nabanna", setTopBoxRoutes);
 
 it_app.use("/api/VIP", meetingRoutes);
+
+it_app.use("/api/public",pageContactRoutes)
 
 // TEST FOR BACKEND RUNNING OR NOT // TO TEST BACKEND  in Browser :http://127.0.0.1:5000
 it_app.get("/api/", (req, res) => {
