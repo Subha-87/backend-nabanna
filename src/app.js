@@ -147,6 +147,17 @@ it_app.use("/api/publicMsg", messageRoutes);
 
 it_app.use("/api/nabanna", setTopBoxRoutes);
 
+const meetingPath = path.join(
+  process.cwd(),
+  "uploads",
+  "images",
+  "Meetings"
+);
+
+it_app.use(
+  "/api/uploads/images/Meetings",
+  express.static(meetingPath)
+);
 it_app.use("/api/VIP", meetingRoutes);
 
 it_app.use("/api/public",pageContactRoutes)
