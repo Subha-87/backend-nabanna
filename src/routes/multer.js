@@ -1,26 +1,42 @@
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs")
+const fs = require("fs");
+
+// Base upload directory
+const uploadBaseDir = path.join(process.cwd(), "uploads", "images");
+
+// All upload folders
+const uploadDirs = {
+  challan: path.join(uploadBaseDir, "ChallanFolder"),
+  workOrder: path.join(uploadBaseDir, "WorkOrderFolder"),
+  approval: path.join(uploadBaseDir, "ApprovalFolder"),
+  estimate: path.join(uploadBaseDir, "EstimateFolder"),
+  requisition: path.join(uploadBaseDir, "RequisitionFolder"),
+  meetings: path.join(uploadBaseDir, "Meetings"),
+};
+
+// Create every directory if it doesn't already exist
+Object.values(uploadDirs).forEach((dir) => {
+  fs.mkdirSync(dir, { recursive: true });
+});
 
 // Handling Challan Img(single or multi) & Work Order Img(single) //
-//1) Set A File Directory where to save Img //
-const chln_Dir = path.join(process.cwd(), "public", "ChallanFolder");
-const workOrderDir = path.join(process.cwd(), "public", "WorkOrderFolder");
 
-
-//2) Set Storage //
+//ChallanImg(single or multi) and Work OrderImg(single)://
 const chln_storage = multer.diskStorage({
   destination: (req, file, cb) => {
     if (file.fieldname === "work_order") {
-      cb(null, workOrderDir);
+      cb(null, uploadDirs.workOrder);
     } else if (file.fieldname === "challan_img") {
-      cb(null, chln_Dir);
+      cb(null, uploadDirs.challan);
     } else {
-      cb(new Error("Invalid field name"), null);
+      cb(new Error("Invalid field name"));
     }
   },
+
   filename: (req, file, cb) => {
     const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9);
+
     cb(null, uniqueName + path.extname(file.originalname));
   },
 });
@@ -41,13 +57,13 @@ const upload_challan_copy = multer({
 });
 
 // Handling Approval Image(Single) Multer Proccess //
-
-const apprvDir = path.join(process.cwd(), "public", "ApprovalFolder");
+//Approval letter://
 
 const apprv_storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, apprvDir);
+    cb(null, uploadDirs.approval);
   },
+
   filename: (req, file, cb) => {
     const safeName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, "-");
     cb(null, `${Date.now()}-${safeName}`);
@@ -60,27 +76,22 @@ const upload_apprv_letter = multer({
 
 // Handling Estimate & Requsition Files //
 
-// Set Path For File Storage Estimate & Requsition //
-const uploadEstDir = path.join(process.cwd(), "public", "EstimateFolder");
-const uploadReqDir = path.join(process.cwd(), "public", "RequisitionFolder");
-
-
 // Set up Storage for uploaded files ->Estimate & Requsition
 const set_storage = multer.diskStorage({
   destination: (req, file, cb) => {
     if (file.fieldname === "est_copy") {
-      cb(null,uploadEstDir );
+      cb(null, uploadDirs.estimate);
     } else if (file.fieldname === "req_letter") {
-      cb(null,uploadReqDir);
+      cb(null, uploadDirs.requisition);
     } else {
       cb(new Error("Invalid field name"));
     }
   },
+
   filename: (req, file, cb) => {
-    
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, uniqueSuffix + ext);
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+
+    cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
 
@@ -108,42 +119,35 @@ const upload_letter = multer({
 });
 
 // MEETING FILES UPLOAD//
-const meetingDir = path.join(process.cwd(),"uploads","images/Meetings")
-
-if(!fs.existsSync(meetingDir)){
-  fs.mkdirSync(meetingDir,{recursive:true})
-}
 
 const meetingStorage = multer.diskStorage({
-  destination:(req,file,cb) => {
-    cb(null,meetingDir) //  The folder where files will be saved
+  destination: (req, file, cb) => {
+    cb(null, uploadDirs.meetings); //  The folder where files will be saved
   },
-  filename: (req,file,cb) => {
+  filename: (req, file, cb) => {
     // 1. Get a random number suffix
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-     // 2. Extract the file extension (e.g., '.png')
-    const extension = path.extname(file.originalname)
-      // 3. Extract the base filename without extension
-    const baseName = path.basename(file.originalname, extension); 
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    // 2. Extract the file extension (e.g., '.png')
+    const extension = path.extname(file.originalname);
+    // 3. Extract the base filename without extension
+    const baseName = path.basename(file.originalname, extension);
     // 4. Combine them safely
-    cb(null, baseName + '-' + uniqueSuffix + extension);
-  }
-})
+    cb(null, baseName + "-" + uniqueSuffix + extension);
+  },
+});
 
 const letterUpload = multer({
-  storage:meetingStorage,
-  limits:{
-    fileSize:10*1024*1024
-  }
-})
-
-
+  storage: meetingStorage,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+  },
+});
 
 module.exports = {
   upload_challan_copy,
   upload_apprv_letter,
   upload_letter,
-  letterUpload
+  letterUpload,
 };
 
 /**

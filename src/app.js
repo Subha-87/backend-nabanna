@@ -93,15 +93,15 @@ it_app.use("/api/estimateReg", estimateRouter);
 
 it_app.use(
   "/api/ApprovalFolder",
-  express.static(path.join(process.cwd(), "public", "ApprovalFolder")),
+  express.static(path.join(process.cwd(), "uploads","images", "ApprovalFolder")),
 );
 it_app.use(
   "/api/EstimateFolder",
-  express.static(path.join(process.cwd(), "public", "EstimateFolder")),
+  express.static(path.join(process.cwd(), "uploads","images", "EstimateFolder")),
 );
 it_app.use(
   "/api/RequisitionFolder",
-  express.static(path.join(process.cwd(), "public", "RequisitionFolder")),
+  express.static(path.join(process.cwd(), "uploads","images", "RequisitionFolder")),
 );
 /*it_app.use(
   "/ChallanFolder",
@@ -132,7 +132,7 @@ if (isProd) {
 
 it_app.use(
   "/api/WorkOrderFolder",
-  express.static(path.join(process.cwd(), "public", "WorkOrderFolder")),
+  express.static(path.join(process.cwd(), "uploads","images","WorkOrderFolder")),
 );
 
 it_app.use("/api/NabannaSystem", hardwareRouter);
@@ -154,6 +154,7 @@ const meetingPath = path.join(
   "Meetings"
 );
 
+// this path add is important to get actual image upload path in frontend//
 it_app.use(
   "/api/uploads/images/Meetings",
   express.static(meetingPath)
