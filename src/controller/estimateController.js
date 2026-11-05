@@ -188,7 +188,7 @@ const showChallanwithOrder = async (req, resp) => {
     const challan = result.challan_img_url;
     return resp.status(200).json({
       success: true,
-      challan_img: challan,
+      challan_img: challan,//not renderes in frontend//
       order_img: order,
       order_no: result.nit_no,
     });
