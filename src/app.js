@@ -53,8 +53,8 @@ if (isDev) {
 }*/
 
 const allowedOrigins = [
-  process.env.CORS_ORIGIN_TWO,
   process.env.CORS_ORIGIN_ONE,
+  process.env.CORS_ORIGIN_TWO ,
 ];
 
 //app.use(cors(corsOption))
